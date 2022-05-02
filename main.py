@@ -14,5 +14,6 @@ try:
 
     amexInterface = AmexInterface(driver.driver)
     amexInterface.authenticate(username, password)
+    amexInterface.addOffers()
 finally:
     driver.closeChrome()

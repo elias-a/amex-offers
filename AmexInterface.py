@@ -19,3 +19,11 @@ class AmexInterface():
 
         loginButton = self.driver.find_element(By.XPATH, "//button[@id='loginSubmit']")
         loginButton.click()
+
+    def addOffers(self):
+        buttons = WebDriverWait(self.driver, 6).until(
+            EC.presence_of_all_elements_located((By.XPATH, "//*[contains(text(), 'Add to Card')]"))
+        )
+        
+        for button in buttons:
+            self.driver.execute_script("arguments[0].click();", button)
