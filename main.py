@@ -1,5 +1,5 @@
+import os
 import logging
-import pathlib
 from configparser import ConfigParser
 from ChromeDriver import ChromeDriver
 from AmexInterface import AmexInterface
@@ -15,13 +15,16 @@ logging.basicConfig(
 logging.info("Starting program to add Amex offers...")
 
 config = ConfigParser()
-configPath = f"{pathlib.Path(__file__).parent.resolve()}/config.ini"
-config.read(configPath)
+config.read(os.path.join(os.path.dirname(__file__), "config.ini"))
+chrome = config["CHROME"]["chrome"]
+port = config["CHROME"]["port"]
+profile = config["CHROME"]["profile"]
 username = config["AMEX"]["username"]
 password = config["AMEX"]["password"]
 
 logging.info("Opening Chrome...")
-driver = ChromeDriver(configPath)
+driver = ChromeDriver(chrome, port, profile)
+driver.initDriver()
 try:
     amexInterface = AmexInterface(driver.driver)
     amexInterface.authenticate(username, password)

@@ -2,6 +2,5 @@ __pycache__
 .DS_Store
 *.ini
 ChromeProfile
-chromedriver
 venv
 *.log
