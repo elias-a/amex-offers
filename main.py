@@ -16,14 +16,11 @@ logging.info("Starting program to add Amex offers...")
 
 config = ConfigParser()
 config.read(os.path.join(os.path.dirname(__file__), "config.ini"))
-chrome = config["CHROME"]["chrome"]
-port = config["CHROME"]["port"]
-profile = config["CHROME"]["profile"]
 username = config["AMEX"]["username"]
 password = config["AMEX"]["password"]
 
 logging.info("Opening Chrome...")
-driver = ChromeDriver(chrome, port, profile)
+driver = ChromeDriver()
 driver.initDriver()
 try:
     amexInterface = AmexInterface(driver.driver)

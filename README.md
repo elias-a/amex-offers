@@ -23,11 +23,6 @@ pip install -r requirements.txt
 Create a file called `config.ini` with the following format:
 
 ```
-[CHROME]
-chrome = <chrome_executable_path>
-port = <port>
-profile = <chrome_user_data_dir>
-
 [AMEX]
 username = <amex_username>
 password = <amex_password>
