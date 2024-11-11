@@ -4,31 +4,31 @@ from configparser import ConfigParser
 from ChromeDriver import ChromeDriver
 from AmexInterface import AmexInterface
 
+
 logging.basicConfig(
-    filename="amex-offers.log",
-    encoding="utf-8",
     level=logging.INFO,
     format="%(asctime)s %(levelname)-8s %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.FileHandler("amex-offers.log"),
+        logging.StreamHandler(),
+    ],
 )
 
-logging.info("Starting program to add Amex offers...")
 
+logging.info("Starting program to add Amex offers...")
 config = ConfigParser()
 config.read(os.path.join(os.path.dirname(__file__), "config.ini"))
-username = config["AMEX"]["username"]
-password = config["AMEX"]["password"]
-
+username = config["AMEX"]["USERNAME"]
+password = config["AMEX"]["PASSWORD"]
+profile_path = config["CHROME"]["PROFILE"]
 logging.info("Opening Chrome...")
-driver = ChromeDriver()
-driver.initDriver()
+driver = ChromeDriver(profile_path)
 try:
-    amexInterface = AmexInterface(driver.driver)
-    amexInterface.authenticate(username, password)
-    amexInterface.addOffers()
+    amex_interface = AmexInterface(driver)
+    logging.info("Authenticating...")
+    amex_interface.authenticate(username, password)
+    logging.info("Adding offers...")
+    #amex_interface.add_offers()
 except Exception as e:
     logging.error(e)
-finally:
-    logging.info("Closing Chrome...")
-    driver.closeChrome()
-

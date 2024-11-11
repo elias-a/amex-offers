@@ -4,42 +4,32 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
+
 class AmexInterface:
-    def __init__(self, driver, timeout = 10):
+    def __init__(self, driver):
         self.driver = driver
-        self._timeout = timeout
 
     def authenticate(self, username, password):
-        self.driver.get("https://global.americanexpress.com/offers/eligible")
-
-        # Enter username.
-        usernameXPath = "//input[@id='eliloUserID']"
-        usernameIsLoaded = EC.presence_of_element_located((By.XPATH, usernameXPath))
-        usernameInput = WebDriverWait(self.driver, self._timeout).until(usernameIsLoaded)
-        usernameInput.send_keys(username)
-
-        # Enter password.
-        passwordXPath = "//input[@id='eliloPassword']"
-        passwordIsLoaded = EC.presence_of_element_located((By.XPATH, passwordXPath))
-        passwordInput = WebDriverWait(self.driver, self._timeout).until(passwordIsLoaded)
-        passwordInput.send_keys(password)
-
-        loginXPath = "//button[@id='loginSubmit']"
-        loginIsLoaded = EC.presence_of_element_located((By.XPATH, loginXPath))
-        loginButton = WebDriverWait(self.driver, self._timeout).until(loginIsLoaded)
-        self.driver.execute_script("arguments[0].click();", loginButton)
-
-        isPageLoadedXPath = "//button[@id='ELIGIBLE']"
-        isPageLoaded = EC.presence_of_element_located((By.XPATH, isPageLoadedXPath))
+        self.driver.driver.get("https://global.americanexpress.com/offers/eligible")
+        username_xpath = "//input[@id='eliloUserID']"
+        self.driver.send_keys(username_xpath, username)
+        password_xpath = "//input[@id='eliloPassword']"
+        self.driver.send_keys(password_xpath, password)
+        login_xpath = "//button[@id='loginSubmit']"
+        self.driver.click(login_xpath)
+        page_loaded_xpath = "//button[@id='ELIGIBLE']"
         try:
-            WebDriverWait(self.driver, self._timeout).until(isPageLoaded)
+            self.driver.wait(page_loaded_xpath)
         except TimeoutException:
-            raise Exception(f"Page did not load after logging in: waited {self._timeout} seconds.")
+            raise Exception(
+                "Page did not load after logging in: "
+                f"waited {self.driver.timeout} seconds."
+            )
 
-    def addOffers(self):
-        buttonXPath = "./descendant::button[contains(text(), 'Add to Card')]"
-        rowXPath = f"//div[@class='row'][{buttonXPath}]"
-        rows = self.driver.find_elements(By.XPATH, rowXPath)
+    def add_offers(self):
+        button_xpath = "./descendant::button[contains(text(), 'Add to Card')]"
+        row_xpath = f"//div[@class='row'][{button_xpath}]"
+        rows = self.driver.find_elements(By.XPATH, row_xpath)
 
         offerColumnXPath = (
             "./ancestor::div[contains(@class, "
