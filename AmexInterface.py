@@ -56,12 +56,10 @@ class AmexInterface:
                 )
 
     def add_offers(self):
-        #test = self.driver.driver.find_elements(By.XPATH, self._row_xpath)
-        #print(test[0].get_attribute("outerHTML"))
         rows = self.driver.driver.find_elements(By.XPATH, self._row_xpath)
         logging.info(f"Found {len(rows)} offers to add...")
         for i, r in enumerate(rows):
-            if i > 0:
+            if i > 3:
                 return
             self._add_offer(r)
         #[self._add_offer(r) for r in rows]
@@ -77,7 +75,7 @@ class AmexInterface:
             "//div[@data-rowtype='offer']["
             "descendant::span[contains(text(), 'Your offer has been added')]"
             f""" and descendant::p[text()="{company}"]"""
-            f""" and descendant::span[text()="{offer}"]]"""
+            f""" and descendant::p[text()="{offer}"]]"""
         )
         try:
             self.driver.wait(is_added_xpath)
