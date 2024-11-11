@@ -29,6 +29,6 @@ try:
     logging.info("Authenticating...")
     amex_interface.authenticate(username, password)
     logging.info("Adding offers...")
-    #amex_interface.add_offers()
+    amex_interface.add_offers()
 except Exception as e:
     logging.error(e)
