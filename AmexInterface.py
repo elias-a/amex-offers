@@ -43,9 +43,11 @@ class AmexInterface:
     def _post_login(self):
         try:
             self.driver.wait(self._row_xpath)
+            logging.info("Logged in...")
         except TimeoutException:
             try:
                 self.driver.wait("//h1[contains(text(), 'Verify your identity')]")
+                logging.info("Need to verify my identity...")
                 self._verify()
             except TimeoutException:
                 raise Exception(
@@ -59,7 +61,7 @@ class AmexInterface:
         rows = self.driver.driver.find_elements(By.XPATH, self._row_xpath)
         logging.info(f"Found {len(rows)} offers to add...")
         for i, r in enumerate(rows):
-            if i > 3:
+            if i > 0:
                 return
             self._add_offer(r)
         #[self._add_offer(r) for r in rows]
@@ -71,9 +73,6 @@ class AmexInterface:
         logging.info(f"Company: {company}")
         button = row.find_element(By.XPATH, "//span[contains(text(), 'Add to Card')]")
         self.driver.driver.execute_script("arguments[0].click();", button)
-        import time
-        time.sleep(3)
-        print(self.driver.driver.page_source)
         is_added_xpath = (
             "//div[@data-rowtype='offer']["
             "descendant::span[contains(text(), 'Your offer has been added')]"
@@ -88,12 +87,18 @@ class AmexInterface:
         logging.info("Added offer...")
 
     def _verify(self):
+        logging.info("Sending code to email...")
         self._send_code_to_email()
         code = self._get_code_from_email()
+        logging.info(f"Code: {code}")
         self._enter_code(code)
 
     def _send_code_to_email(self):
-        self.driver.click("//button[@data-testid='option-button']")
+        xpath = (
+            "//button[@data-testid='option-button' "
+            "and .//h3[contains(text(), 'email')]]"
+        )
+        self.driver.click(xpath)
 
     def _get_code_from_email(self):
         # TODO
