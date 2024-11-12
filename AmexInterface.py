@@ -1,7 +1,5 @@
 import logging
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
 
@@ -11,23 +9,9 @@ class AmexInterface:
         self._set_xpaths()
 
     def _set_xpaths(self):
-        self._button_xpath = (
-            "./descendant::span[contains(text(), "
-            "'Add to Card')]"
-        )
-        self._row_xpath = f"//div[contains(@class, 'offer-row-item')][{self._button_xpath}]"
-        offer_column_xpath = (
-            "./ancestor::div[contains(@class, "
-            "'offer-info offer-column')]"
-        )
-        self._offer_column_xpath = offer_column_xpath
-        self._company_xpath = (
-            "./descendant::p[contains(@class, 'body-1')]"
-            f"[{offer_column_xpath}]"
-        )
-        self._offer_xpath = (
-            "./descendant::p[contains(@class, 'heading-3')]"
-            f"[{offer_column_xpath}]"
+        self._row_xpath = (
+            "//div[contains(@class, 'offer-row-item')]"
+            "[./descendant::span[contains(text(), 'Add to Card')]]"
         )
 
     def authenticate(self, username, password):
@@ -38,38 +22,48 @@ class AmexInterface:
         self.driver.send_keys(password_xpath, password)
         login_xpath = "//button[@id='loginSubmit']"
         self.driver.click(login_xpath)
-        self._post_login()
+        self._handle_login()
 
-    def _post_login(self):
+    def _handle_login(self):
+        for func in [self._login_success, self._need_verify]:
+            if self._try_wait(func):
+                break
+
+    def _try_wait(self, func):
         try:
-            self.driver.wait(self._row_xpath)
-            logging.info("Logged in...")
+            func()
         except TimeoutException:
-            try:
-                self.driver.wait("//h1[contains(text(), 'Verify your identity')]")
-                logging.info("Need to verify my identity...")
-                self._verify()
-            except TimeoutException:
-                raise Exception(
-                    "Page did not load after logging in: "
-                    f"waited {self.driver.timeout} seconds."
-                )
+            return False
+        return True
+
+    def _login_success(self):
+        self.driver.wait(self._row_xpath)
+        logging.info("Logged in...")
+
+    def _need_verify(self):
+        verify_xpath = "//h1[contains(text(), 'Verify your identity')]"
+        self.driver.wait(verify_xpath)
+        logging.info("2-factor authentication required...")
+        self._verify()
 
     def add_offers(self):
         rows = self.driver.driver.find_elements(By.XPATH, self._row_xpath)
         logging.info(f"Found {len(rows)} offers to add...")
-        for i, r in enumerate(rows):
-            if i > 3:
-                return
-            self._add_offer(r)
-        #[self._add_offer(r) for r in rows]
+        [self._add_offer(r) for r in rows]
 
     def _add_offer(self, row):
-        offer_info = row.find_element(By.XPATH, "//div[contains(@class, 'offer-info offer-column')]")
-        offer, company = [p.text for p in offer_info.find_elements(By.XPATH, "./child::*")]
+        info_col = row.find_element(
+            By.XPATH,
+            ".//div[contains(@class, 'offer-info offer-column')]",
+        )
+        info = info_col.find_elements(By.XPATH, "./child::*")
+        offer, company = [p.text for p in info]
         logging.info(f"Found offer: {offer}")
         logging.info(f"Company: {company}")
-        button = row.find_element(By.XPATH, "//span[contains(text(), 'Add to Card')]")
+        button = row.find_element(
+            By.XPATH,
+            "//span[contains(text(), 'Add to Card')]",
+        )
         self.driver.driver.execute_script("arguments[0].click();", button)
         is_added_xpath = (
             "//div[@data-rowtype='offer']["
@@ -104,3 +98,4 @@ class AmexInterface:
 
     def _enter_code(self, code):
         self.driver.send_keys("//input[@id='question-value']", code)
+        # TODO: Submit
