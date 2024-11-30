@@ -6,3 +6,4 @@ config.ini
 ChromeProfile
 venv
 *.log
+tests/data/email.html
