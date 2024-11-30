@@ -1,4 +1,5 @@
 import logging
+from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from functools import partial
@@ -103,8 +104,12 @@ class AmexInterface:
     def _get_code_from_email(self, sender, sent_time):
         gmail_interface = GmailInterface()
         message = gmail_interface.get_message_by_sender(sender, sent_time)
-        # TODO
-        return "123456"
+        return self._parse_email(message)
+
+    def _parse_email(self, message):
+        soup = BeautifulSoup(message, "html.parser")
+        previous_sibling = soup.find("tr", text="Your Re-authentication Key:")
+        return previous_sibling.find_next_sibling().text
 
     def _enter_code(self, code):
         self.driver.send_keys("//input[@id='question-value']", code)
