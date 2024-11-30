@@ -22,13 +22,14 @@ config.read(os.path.join(os.path.dirname(__file__), "config.ini"))
 username = config["AMEX"]["USERNAME"]
 password = config["AMEX"]["PASSWORD"]
 profile_path = config["CHROME"]["PROFILE"]
+verify_sender = config["GMAIL"]["SENDER"]
 logging.info("Opening Chrome...")
 driver = ChromeDriver(profile_path)
 try:
     amex_interface = AmexInterface(driver)
     logging.info("Authenticating...")
-    amex_interface.authenticate(username, password)
+    amex_interface.authenticate(username, password, verify_sender)
     logging.info("Adding offers...")
-    amex_interface.add_offers()
+    #amex_interface.add_offers()
 except Exception as e:
     logging.error(e)

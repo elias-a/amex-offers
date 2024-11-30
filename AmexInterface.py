@@ -1,6 +1,9 @@
 import logging
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
+from functools import partial
+from datetime import datetime, timezone
+from gmail_interface import GmailInterface
 
 
 class AmexInterface:
@@ -14,7 +17,7 @@ class AmexInterface:
             "[./descendant::span[contains(text(), 'Add to Card')]]"
         )
 
-    def authenticate(self, username, password):
+    def authenticate(self, username, password, verify_sender):
         self.driver.get("https://global.americanexpress.com/offers/eligible")
         username_xpath = "//input[@id='eliloUserID']"
         self.driver.send_keys(username_xpath, username)
@@ -22,10 +25,14 @@ class AmexInterface:
         self.driver.send_keys(password_xpath, password)
         login_xpath = "//button[@id='loginSubmit']"
         self.driver.click(login_xpath)
-        self._handle_login()
+        self._handle_login(verify_sender)
 
-    def _handle_login(self):
-        for func in [self._login_success, self._need_verify]:
+    def _handle_login(self, verify_sender):
+        funcs = [
+            self._login_success,
+            partial(self._need_verify, verify_sender),
+        ]
+        for func in funcs:
             if self._try_wait(func):
                 break
 
@@ -40,11 +47,11 @@ class AmexInterface:
         self.driver.wait(self._row_xpath)
         logging.info("Logged in...")
 
-    def _need_verify(self):
+    def _need_verify(self, verify_sender):
         verify_xpath = "//h1[contains(text(), 'Verify your identity')]"
         self.driver.wait(verify_xpath)
         logging.info("2-factor authentication required...")
-        self._verify()
+        self._verify(verify_sender)
 
     def add_offers(self):
         rows = self.driver.driver.find_elements(By.XPATH, self._row_xpath)
@@ -78,10 +85,10 @@ class AmexInterface:
             return
         logging.info("Added offer...")
 
-    def _verify(self):
+    def _verify(self, verify_sender):
         logging.info("Sending code to email...")
-        self._send_code_to_email()
-        code = self._get_code_from_email()
+        sent_time = self._send_code_to_email()
+        code = self._get_code_from_email(verify_sender, sent_time)
         logging.info(f"Code: {code}")
         self._enter_code(code)
 
@@ -91,8 +98,11 @@ class AmexInterface:
             "and .//h3[contains(text(), 'email')]]"
         )
         self.driver.click(xpath)
+        return datetime.now(timezone.utc).replace(microseconds=0)
 
-    def _get_code_from_email(self):
+    def _get_code_from_email(self, sender, sent_time):
+        gmail_interface = GmailInterface()
+        message = gmail_interface.get_message_by_sender(sender, sent_time)
         # TODO
         return "123456"
 

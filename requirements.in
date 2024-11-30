@@ -1,2 +1,3 @@
 selenium
 git+https://github.com/elias-a/ChromeDriver.git
+git+https://github.com/elias-a/gmail-interface.git
