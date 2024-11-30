@@ -14,7 +14,8 @@ requires-python = ">=3.11"
 dependencies = [
   "selenium",
   "ChromeDriver @ git+https://github.com/elias-a/ChromeDriver.git",
-  "gmail-interface @ git+https://github.com/elias-a/gmail-interface.git"
+  "gmail-interface @ git+https://github.com/elias-a/gmail-interface.git",
+  "beautifulsoup4"
 ]
 classifiers = [
   "Programming Language :: Python :: 3",
