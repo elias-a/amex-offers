@@ -1,6 +1,7 @@
 import os
 from unittest import TestCase
 from bs4 import BeautifulSoup
+from .data import CODE
 
 
 class Test_parse_email(TestCase):
@@ -11,4 +12,4 @@ class Test_parse_email(TestCase):
         soup = BeautifulSoup(message, "html.parser")
         previous_sibling = soup.find("tr", text="Your Re-authentication Key:")
         code = previous_sibling.find_next_sibling().text
-        assert code == "896308"
+        assert code == CODE
