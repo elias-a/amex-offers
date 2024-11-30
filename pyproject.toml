@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "amex-interface"
+version = "1.0.0"
+authors = [
+  {name = "Elias Alstead", email = "elias.alstead@gmail.com"},
+]
+description = "Programmatically add offers to an American Express card"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "selenium",
+  "ChromeDriver @ git+https://github.com/elias-a/ChromeDriver.git",
+  "gmail-interface @ git+https://github.com/elias-a/gmail-interface.git"
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+]
