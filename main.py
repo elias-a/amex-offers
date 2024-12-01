@@ -22,9 +22,10 @@ with open(os.path.join(os.path.dirname(__file__), "config.toml"), "rb") as f:
 username = config["AMEX"]["USERNAME"]
 password = config["AMEX"]["PASSWORD"]
 profile_path = config["CHROME"]["PROFILE"]
+headless = config["CHROME"]["HEADLESS"]
 verify_sender = config["GMAIL"]["SENDER"]
 logging.info("Opening Chrome...")
-driver = ChromeDriver(profile_path)
+driver = ChromeDriver(profile_path, headless=headless)
 try:
     amex_interface = AmexInterface(driver)
     logging.info("Authenticating...")
