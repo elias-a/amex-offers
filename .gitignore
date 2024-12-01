@@ -1,7 +1,7 @@
 __pycache__
 *.egg-info
 .DS_Store
-config.ini
+config.toml
 *.env
 ChromeProfile
 venv

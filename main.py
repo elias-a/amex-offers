@@ -1,6 +1,6 @@
 import os
+import tomllib
 import logging
-from configparser import ConfigParser
 from ChromeDriver import ChromeDriver
 from amex_offers import AmexInterface
 
@@ -17,8 +17,8 @@ logging.basicConfig(
 
 
 logging.info("Starting program to add Amex offers...")
-config = ConfigParser()
-config.read(os.path.join(os.path.dirname(__file__), "config.ini"))
+with open(os.path.join(os.path.dirname(__file__), "config.toml"), "rb") as f:
+    config = tomllib.load(f)
 username = config["AMEX"]["USERNAME"]
 password = config["AMEX"]["PASSWORD"]
 profile_path = config["CHROME"]["PROFILE"]
