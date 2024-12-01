@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 from unittest.mock import Mock
-from amex_interface import AmexInterface
+from amex_offers import AmexInterface
 from .data import CODE
 
 

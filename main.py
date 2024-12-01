@@ -2,7 +2,7 @@ import os
 import logging
 from configparser import ConfigParser
 from ChromeDriver import ChromeDriver
-from amex_interface import AmexInterface
+from amex_offers import AmexInterface
 
 
 logging.basicConfig(

@@ -3,7 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "amex-interface"
+name = "amex-offers"
 version = "1.0.0"
 authors = [
   {name = "Elias Alstead", email = "elias.alstead@gmail.com"},
