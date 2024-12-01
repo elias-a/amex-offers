@@ -36,6 +36,8 @@ class AmexInterface:
         for func in funcs:
             if self._try_wait(func):
                 break
+        else:
+            raise Exception("Unable to authenticate...")
 
     def _try_wait(self, func):
         try:

@@ -34,3 +34,4 @@ try:
     amex_interface.add_offers()
 except Exception as e:
     logging.error(e)
+    logging.info("Exiting program...")
