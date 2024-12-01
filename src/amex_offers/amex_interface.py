@@ -10,13 +10,6 @@ from gmail_interface import GmailInterface
 class AmexInterface:
     def __init__(self, driver):
         self.driver = driver
-        self._set_xpaths()
-
-    def _set_xpaths(self):
-        self._row_xpath = (
-            "//div[contains(@class, 'offer-row-item')]"
-            "[./descendant::span[contains(text(), 'Add to Card')]]"
-        )
 
     def authenticate(self, username, password, verify_sender):
         self.driver.get("https://global.americanexpress.com/offers/eligible")
@@ -47,7 +40,8 @@ class AmexInterface:
         return True
 
     def _login_success(self):
-        self.driver.wait(self._row_xpath)
+        offers_xpath = "//span[contains(text(), 'Amex Offers & Benefits')]"
+        self.driver.wait(offers_xpath)
         logging.info("Logged in...")
 
     def _need_verify(self, verify_sender):
@@ -57,7 +51,11 @@ class AmexInterface:
         self._verify(verify_sender)
 
     def add_offers(self):
-        rows = self.driver.driver.find_elements(By.XPATH, self._row_xpath)
+        row_xpath = (
+            "//div[contains(@class, 'offer-row-item')]"
+            "[./descendant::span[contains(text(), 'Add to Card')]]"
+        )
+        rows = self.driver.driver.find_elements(By.XPATH, row_xpath)
         logging.info(f"Found {len(rows)} offers to add...")
         [self._add_offer(r) for r in rows]
 
