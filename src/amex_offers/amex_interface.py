@@ -1,3 +1,4 @@
+import os
 import logging
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
@@ -114,3 +115,6 @@ class AmexInterface:
     def _enter_code(self, code):
         self.driver.send_keys("//input[@id='question-value']", code)
         # TODO: Submit
+        path = os.path.join(os.path.dirname(__file__), "enter_code.html")
+        with open(path, "wt") as f:
+            f.write(self.driver.driver.page_source)
