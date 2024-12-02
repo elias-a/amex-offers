@@ -56,6 +56,11 @@ class AmexInterface:
             "//div[contains(@class, 'offer-row-item')]"
             "[./descendant::span[contains(text(), 'Add to Card')]]"
         )
+        try:
+            self.driver.wait(row_xpath)
+        except TimeoutException:
+            logging.info("No offers found...")
+            return
         rows = self.driver.driver.find_elements(By.XPATH, row_xpath)
         logging.info(f"Found {len(rows)} offers to add...")
         [self._add_offer(r) for r in rows]
