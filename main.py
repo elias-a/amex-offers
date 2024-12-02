@@ -5,14 +5,12 @@ from ChromeDriver import ChromeDriver
 from amex_offers import AmexInterface
 
 
+log_file = os.path.join(os.path.dirname(__file__), "amex-offers.log")
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)-8s %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
-    handlers=[
-        logging.FileHandler("amex-offers.log"),
-        logging.StreamHandler(),
-    ],
+    handlers=[logging.FileHandler(log_file), logging.StreamHandler()],
 )
 
 
