@@ -24,6 +24,9 @@ password = config["AMEX"]["PASSWORD"]
 profile_path = config["CHROME"]["PROFILE"]
 headless = config["CHROME"]["HEADLESS"]
 verify_sender = config["GMAIL"]["SENDER"]
+error_html_path = None
+if "DEBUGGING" in config and "ERROR_HTML_PATH" in config["DEBUGGING"]:
+    error_html_path = config["DEBUGGING"]["ERROR_HTML_PATH"]
 logging.info("Opening Chrome...")
 driver = ChromeDriver(profile_path, headless=headless)
 try:
@@ -33,5 +36,8 @@ try:
     logging.info("Adding offers...")
     amex_interface.add_offers()
 except Exception as e:
+    if error_html_path is not None:
+        with open(error_html_path, "wt") as f:
+            f.write(driver.driver.page_source)
     logging.error(e)
     logging.info("Exiting program...")
