@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "amex-offers"
-version = "1.0.0"
+version = "1.0.1"
 authors = [
   {name = "Elias Alstead", email = "elias.alstead@gmail.com"},
 ]
@@ -13,7 +13,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
   "selenium",
-  "ChromeDriver @ git+https://github.com/elias-a/ChromeDriver.git",
+  "undetected-chromedriver",
   "gmail-interface @ git+https://github.com/elias-a/gmail-interface.git",
   "beautifulsoup4"
 ]
