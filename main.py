@@ -14,24 +14,23 @@ logging.basicConfig(
 
 
 logging.info("Starting program to add Amex offers...")
+
 with open(os.path.join(os.path.dirname(__file__), "config.toml"), "rb") as f:
     config = tomllib.load(f)
+chrome_profile_path = config["CHROME"]["PROFILE"]
 username = config["AMEX"]["USERNAME"]
 password = config["AMEX"]["PASSWORD"]
-chrome_profile_path = config["CHROME"]["PROFILE"]
 verify_sender = config["GMAIL"]["SENDER"]
-error_html_path = None
-if "DEBUGGING" in config and "ERROR_HTML_PATH" in config["DEBUGGING"]:
-    error_html_path = config["DEBUGGING"]["ERROR_HTML_PATH"]
+error_html_path = config.get("ERROR_HTML_PATH", "error.html")
 
 try:
     amex_interface = AmexInterface(chrome_profile_path)
     amex_interface.authenticate(username, password, verify_sender)
-    #logging.info("Adding offers...")
     amex_interface.add_offers()
 except Exception as e:
-    if error_html_path is not None and amex_interface.driver is not None:
+    if amex_interface.driver is not None:
         with open(error_html_path, "wt") as f:
-            f.write(amex_interface.driver.driver.page_source)
+            f.write(amex_interface.driver.get_page_source())
+
     logging.error(e)
     logging.info("Exiting program...")

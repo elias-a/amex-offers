@@ -2,6 +2,7 @@ import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 
 class ChromeDriver:
@@ -34,6 +35,9 @@ class ChromeDriver:
         [options.add_experimental_option(k, v) for k, v in opts.items()]
         return options
 
+    def get_page_source(self):
+        return self.driver.page_source
+
     def get(self, url):
         self.driver.get(url)
 
@@ -47,6 +51,13 @@ class ChromeDriver:
         element = WebDriverWait(self.driver, self.timeout).until(is_loaded)
         self.driver.execute_script("arguments[0].click();", element)
 
-    def wait(self, xpath, is_optional=False):
+    def wait(self, xpath):
         is_loaded = EC.presence_of_element_located((By.XPATH, xpath))
         WebDriverWait(self.driver, self.timeout).until(is_loaded)
+
+    def wait_and_get(self, xpath):
+        try:
+            self.wait(xpath)
+        except TimeoutException:
+            return []
+        return self.driver.find_elements(By.XPATH, xpath)
