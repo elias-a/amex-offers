@@ -7,3 +7,7 @@ ChromeProfile
 venv
 *.log
 *.html
+
+# Gmail
+credentials.json
+token.json
