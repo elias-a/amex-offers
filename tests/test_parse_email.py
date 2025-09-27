@@ -1,18 +1,10 @@
-import os
-from unittest import TestCase
-from unittest.mock import Mock
+from pathlib import Path
 from amex_offers import AmexInterface
-from .data import CODE
 
 
-class Test_parse_email(TestCase):
-    def setUp(self):
-        driver = Mock()
-        self.amex_interface = AmexInterface(driver)
+def test__parse_email(tmp_path):
+    email = (Path(__file__).parent / "data" / "email.html").read_text()
+    code = (Path(__file__).parent / "data" / "code.txt").read_text().strip()
 
-    def test_parse_email(self):
-        path = os.path.join(os.path.dirname(__file__), "data/email.html")
-        with open(path, "rt") as f:
-            message = f.read()
-        code = self.amex_interface._parse_email(message)
-        assert code == CODE
+    amex_interface = AmexInterface(tmp_path)
+    assert amex_interface._parse_email(email) == code

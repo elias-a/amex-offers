@@ -1,12 +1,17 @@
 __pycache__
 *.egg-info
+venv
+.tox
+
 .DS_Store
+
 config.toml
 *.env
+
 ChromeProfile
-venv
+
 *.log
-*.html
+error.html
 
 # Gmail
 credentials.json
