@@ -1,10 +1,10 @@
-import os
 import tomllib
 import logging
+from pathlib import Path
 from amex_offers import AmexInterface
 
 
-log_file = os.path.join(os.path.dirname(__file__), "amex-offers.log")
+log_file = Path(__file__).parent / "amex-offers.log"
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)-8s %(message)s",
@@ -15,7 +15,7 @@ logging.basicConfig(
 
 logging.info("Starting program to add Amex offers...")
 
-with open(os.path.join(os.path.dirname(__file__), "config.toml"), "rb") as f:
+with open(Path(__file__).parent / "config.toml", "rb") as f:
     config = tomllib.load(f)
 chrome_profile_path = config["CHROME"]["PROFILE"]
 username = config["AMEX"]["USERNAME"]
