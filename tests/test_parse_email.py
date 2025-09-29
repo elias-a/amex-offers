@@ -1,5 +1,5 @@
 from pathlib import Path
-from amex_offers import AmexInterface
+from src.amex_offers import AmexInterface
 
 
 def test__parse_email(tmp_path):
