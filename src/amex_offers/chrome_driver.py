@@ -1,3 +1,4 @@
+import chromedriver_autoinstaller
 import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -6,34 +7,20 @@ from selenium.common.exceptions import TimeoutException
 
 
 class ChromeDriver:
-    def __init__(
-        self,
-        chromedriver_path,
-        user_data_dir,
-        headless=False,
-        timeout=10,
-    ):
+    def __init__(self, user_data_dir, headless=False, timeout=10):
         self.timeout = timeout
-        self.driver = self._init_driver(
-            chromedriver_path,
-            user_data_dir,
-            headless,
-        )
+        self.driver = self._init_driver(user_data_dir, headless)
 
     def __del__(self):
         self.driver.quit()
 
-    def _init_driver(self, chromedriver_path, user_data_dir, headless):
+    def _init_driver(self, user_data_dir, headless):
+        chromedriver_path = chromedriver_autoinstaller.install()
         return uc.Chrome(
             driver_executable_path=chromedriver_path,
             user_data_dir=user_data_dir,
             headless=headless,
         )
-
-    def _add_options(self, opts):
-        options = uc.ChromeOptions()
-        [options.add_experimental_option(k, v) for k, v in opts.items()]
-        return options
 
     def get_page_source(self):
         return self.driver.page_source
@@ -49,6 +36,9 @@ class ChromeDriver:
     def click(self, xpath):
         is_loaded = EC.element_to_be_clickable((By.XPATH, xpath))
         element = WebDriverWait(self.driver, self.timeout).until(is_loaded)
+        self.click_element(element)
+
+    def click_element(self, element):
         self.driver.execute_script("arguments[0].click();", element)
 
     def wait(self, xpath):
